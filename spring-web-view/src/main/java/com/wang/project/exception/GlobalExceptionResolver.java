@@ -8,11 +8,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 public class GlobalExceptionResolver implements HandlerExceptionResolver{
 
-	@Override
-	public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object object,
-			Exception exception) {
-		
+	public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler,
+			Exception ex) {
 		return null;
 	}
+
+
 
 }

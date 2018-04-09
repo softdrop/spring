@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- 加载配置文件jdbc.properties中的内容 -->
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	   	<property name="ignoreUnresolvablePlaceholders" value="true"/>
+	   	<property name="locations">
+	   		<list>
+	       		<value>classpath:config/jdbc/jdbc.properties</value>
+	      	</list>
+	    </property>
+	</bean>
+	<!-- 简化配置 -->
+	<!-- <context:property-placeholder location="classpath:config/jdbc/jdbc.properties" ignore-unresolvable="ture" /> -->
+	
+	<!-- 配置数据源 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+		<property name="username" value="${username}"></property>
+		<property name="password" value="${password}"></property>
+		<property name="url" value="${url}"></property>
+		<property name="driverClassName" value="${driverClassName}"></property>
+		<property name="initialSize" value="${initialSize}"></property>
+		<property name="maxTotal" value="${maxTotal}"></property>
+		<property name="maxIdle" value="${maxIdle}"></property>
+		<property name="minIdle" value="${minIdle}"></property>
+		<property name="maxWaitMillis" value="${maxWaitMillis}"></property>
+		<property name="validationQuery" value="${validationQuery}"></property>
+		<property name="testOnBorrow" value="${testOnBorrow}"></property>
+		<property name="testOnReturn" value="${testOnReturn}"></property>
+		<property name="testWhileIdle" value="${testWhileIdle}"></property>
+		<property name="timeBetweenEvictionRunsMillis" value="${timeBetweenEvictionRunsMillis}"></property>
+		<property name="numTestsPerEvictionRun" value="${numTestsPerEvictionRun}"></property>
+		<property name="minEvictableIdleTimeMillis" value="${minEvictableIdleTimeMillis}"></property>
+	</bean>
+	
+	<!-- 数据工厂 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!--注入数据库连接池-->	
+		<property name="dataSource" ref="dataSource"></property>
+		<!--扫描entity包,使用别名,多个用;隔开-->
+		<property name="typeAliasesPackage" value="com.wang.project.entity"></property>
+		<!--扫描sql配置文件:mapper需要的xml文件-->
+		<property name="mapperLocations" value="classpath*:/mappers/*.xml"></property>
+		<!-- mybatis配置文件 -->
+		<property name="configLocation" value="classpath:/config/mybatis/spring-mybatis.xml"></property>
+	</bean>
+	
+	<!-- 配置扫描Dao接口包,动态实现DAO接口,注入到spring容器 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.wang.project.mapper"></property>
+	</bean>
+	
+</beans> 
